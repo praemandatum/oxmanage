@@ -95,11 +95,11 @@ sub raw_runoxcommand {
 
 sub newuser {
     my $firstname = $d->inputbox( text => "first name" );
-    exit unless $firstname;
+    exit unless $firstname and $d->state() eq "OK";
     my $lastname  = $d->inputbox( text => "last name" );
-    exit unless $lastname;
+    exit unless $lastname and $d->state() eq "OK";
     my $email     = $d->inputbox( text => "email name" );
-    exit unless $email;
+    exit unless $email and $d->state() eq "OK";
 
     my $username  = lcfirst($lastname);
     my $displayname = ucfirst($firstname) . " " . ucfirst($lastname);
@@ -125,10 +125,10 @@ sub newuser {
 
 sub newgroup {
     my $groupname = $d->inputbox( text => "group name" );
-    exit unless $groupname;
+    exit unless $groupname and $d->state() eq "OK";
 
     my $groupdisplayname = $d->inputbox( text => "group display name" );
-    exit unless $groupdisplayname;
+    exit unless $groupdisplayname and $d->state() eq "OK";
 
     my $confirmmsg = "creating group"
                    . " \"$groupname\""
@@ -193,7 +193,7 @@ sub deletegroup {
         text => "Which Groups do you want to delete?",
         list => $menulist
     );
-    exit unless (@to_delete_ids);
+    exit unless (@to_delete_ids and $d->state() eq "OK");
 
     my $delete_group_str;
     foreach my $group_id (@to_delete_ids) {
@@ -224,7 +224,7 @@ sub deleteuser {
         text => "Which users do you want to delete?",
         list => $menulist
     );
-    exit unless (@to_delete_ids);
+    exit unless (@to_delete_ids and $d->state() eq "OK");
 
     my $delete_user_str;
     foreach my $user_id (@to_delete_ids) {
@@ -268,7 +268,7 @@ sub changegroups {
         text => 'select the user, you want to change',
         list => $menulist
     );
-    exit unless ($selected_user);
+    exit unless ($selected_user and $d->state() eq "OK");
 
     $menulist = [];
     my @old_groups;
@@ -289,6 +289,8 @@ sub changegroups {
         text => "Select groups for: " . %{$users->{$selected_user}}->{Display_name},
         list => $menulist
     );
+
+    exit unless (@new_groups and $d->state() eq "OK");
 
     my @to_remove;
     my @to_add;
