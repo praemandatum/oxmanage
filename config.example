@@ -1,0 +1,6 @@
+oxadmin_user     'oxadmin'
+oxadmin_password 'foobar'
+context          1
+ox_sbin_path     "/opt/open-xchange/sbin"
+imapserver       "mail.example.com"
+smtpserver       "mail.example.com"

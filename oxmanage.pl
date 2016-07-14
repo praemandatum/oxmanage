@@ -9,6 +9,7 @@ use UI::Dialog;
 use Switch;
 use Text::CSV;
 use Data::Dumper;
+use Config::Simple;
 
 #########################################
 #
@@ -16,12 +17,28 @@ use Data::Dumper;
 #
 #########################################
 
-our $oxadmin_user = 'oxadmin';
-our $oxadmin_pw   = 'foobar';
-our $context      = 1;
-our $ox_sbin_path = "/opt/open-xchange/sbin";
-our $imapserver   = "foo.knopwob.de";
-our $smtpserver   = "foo.knopwob.de";
+my @config_files = (
+		     "/usr/local/etc/oxtools/config",
+		     "/etc/oxtools/config",
+                     "./config"
+                   );
+
+my $config_file;
+
+for my $cf (@config_files) {
+    $config_file = $cf if -r $cf;
+}
+
+die "no config file found found" unless $config_file;
+
+my $cfg = new Config::Simple($config_file) or die $!;
+
+our $oxadmin_user = $cfg->param("oxadmin_user")       or die "Missing config oxadmin_user"; 
+our $oxadmin_pw   = $cfg->param("oxadmin_password")   or die "Missing config: oxadmin_password"; 
+our $context      = $cfg->param("context")            or die "Missing config: context"; 
+our $ox_sbin_path = $cfg->param("ox_sbin_path")       or die "Missing config: ox_sbin_path";
+our $imapserver   = $cfg->param("imapserver")         or die "imapserver"; 
+our $smtpserver   = $cfg->param("smtpserver")         or die "smtpserver"; 
 
 #########################################
 
